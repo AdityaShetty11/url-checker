@@ -18,8 +18,13 @@ function checkUrl(url) {
   });
 }
 
+let latestRequestId = 0;
+
 function checkAndShow(url) {
+  const myId = ++latestRequestId;
+
   checkUrl(url).then(result => {
+    if (myId !== latestRequestId) return; // Ignore the request,if a newer request has been made    
     if (result.exists) {
       showResult('found', 'Found', `The URL points to a ${result.type}.`);
     } else {
@@ -63,6 +68,7 @@ urlInput.addEventListener('input', (e)=>{
 
     if(value === ''){
         hideResult();
+        latestRequestId++;
         return;
     }
     try{
@@ -70,6 +76,7 @@ urlInput.addEventListener('input', (e)=>{
         showResult('checking', 'Checking…', 'Please wait while we check the URL.');
     }catch(err){
         showResult('error', 'Invalid URL', 'Please enter a valid URL.');
+        latestRequestId++;
         return;
     }
 
