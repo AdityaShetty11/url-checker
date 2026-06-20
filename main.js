@@ -24,7 +24,7 @@ function checkAndShow(url) {
   const myId = ++latestRequestId;
 
   checkUrl(url).then(result => {
-    if (myId !== latestRequestId) return; // Ignore the request,if a newer request has been made    
+    if (myId !== latestRequestId) return;
     if (result.exists) {
       showResult('found', 'Found', `The URL points to a ${result.type}.`);
     } else {
@@ -33,17 +33,17 @@ function checkAndShow(url) {
   });
 }
 
-function throttle(fn, limitMs) {
-  let coolingDown = false;
+// Waits until the user pauses for `delayMs` before firing.
+// Every new call resets the timer, so only the last call goes through.
+function debounce(fn, delayMs) {
+  let timer = null;
   return function(...args) {
-    if (coolingDown) return;
-    fn(...args);
-    coolingDown = true;
-    setTimeout(() => { coolingDown = false; }, limitMs);
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delayMs);
   };
 }
 
-const throttledCheck = throttle(checkAndShow, 500);
+const debouncedCheck = debounce(checkAndShow, 500);
 
 //  DOM refs 
 const urlInput      = document.getElementById('urlInput');
@@ -80,5 +80,5 @@ urlInput.addEventListener('input', (e)=>{
         return;
     }
 
-    throttledCheck(value);
+    debouncedCheck(value);
 })
