@@ -73,6 +73,7 @@ urlInput.addEventListener('input', (e)=>{
     }
     try{
         new URL(value);
+        latestRequestId++;
         showResult('checking', 'Checking…', 'Please wait while we check the URL.');
     }catch(err){
         showResult('error', 'Invalid URL', 'Please enter a valid URL.');
